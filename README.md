@@ -1,4 +1,4 @@
-# JSON Restful JSON API
+# Golang Restful JSON API
 
 ## Running Examples
 
