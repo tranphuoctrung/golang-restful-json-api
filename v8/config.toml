@@ -1,0 +1,4 @@
+server="ds153948.mlab.com:53948"
+database="todos_db"
+dbuser="trungtp"
+dbpassword="trungtp123"

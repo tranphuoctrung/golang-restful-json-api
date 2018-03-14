@@ -1,0 +1,329 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "0.0.1",
+    "title" : "Todo API"
+  },
+  "paths": {
+    "/todos": {
+      "get": {
+        "tags": [
+          "todos"
+        ],
+        "summary": "Handler returning list of todos.",
+        "operationId": "listTodos",
+        "responses": {
+          "200": {
+            "description": "todoList",
+            "schema": {
+              "$ref": "#/definitions/todoList"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "todos"
+        ],
+        "summary": "Handler creating a todo.",
+        "operationId": "todoCreate",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/CreateTodoReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/todoResp"
+          },
+          "400": {
+            "$ref": "#/responses/badReq"
+          }
+        }
+      }
+    },
+    "/todos/{todoId}": {
+      "get": {
+        "description": "Information about todo",
+        "tags": [
+          "todos"
+        ],
+        "summary": "Handler returning information about todo.",
+        "operationId": "getTodoById",
+        "parameters": [
+          {
+            "type": "string",
+            "x-go-name": "TodoId",
+            "description": "The id of todo",
+            "name": "todoId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/todoResp"
+          },
+          "404": {
+            "$ref": "#/responses/badReq"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "todos"
+        ],
+        "summary": "Handler deleting a todo.",
+        "operationId": "todoDelete",
+        "parameters": [
+          {
+            "type": "string",
+            "x-go-name": "TodoId",
+            "description": "The id of todo",
+            "name": "todoId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/ok"
+          },
+          "404": {
+            "$ref": "#/responses/badReq"
+          },
+          "500": {
+            "$ref": "#/responses/internal"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "CreateTodoReq": {
+      "description": "CreateTodoReq contains request data for create todo API",
+      "type": "object",
+      "properties": {
+        "completed": {
+          "description": "Completed defines whether created todo had been completed or not",
+          "type": "boolean",
+          "x-go-name": "Completed"
+        },
+        "name": {
+          "description": "Name of the repository",
+          "type": "string",
+          "x-go-name": "Name"
+        }
+      },
+      "x-go-package": "golang-restful-json-api/v8/restapi/models"
+    },
+    "ObjectId": {
+      "description": "http://www.mongodb.org/display/DOCS/Object+IDs",
+      "type": "string",
+      "title": "ObjectId is a unique ID identifying a BSON value. It must be exactly 12 bytes\nlong. MongoDB objects by default have such a property set in their \"_id\"\nproperty.",
+      "x-go-package": "gopkg.in/mgo.v2/bson"
+    },
+    "todo": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "completed"
+      ],
+      "properties": {
+        "completed": {
+          "description": "the status of this todo",
+          "type": "boolean",
+          "x-go-name": "Completed"
+        },
+        "id": {
+          "$ref": "#/definitions/ObjectId"
+        },
+        "name": {
+          "description": "the name for this todo",
+          "type": "string",
+          "minLength": 3,
+          "x-go-name": "Name"
+        }
+      },
+      "x-go-name": "Todo",
+      "x-go-package": "golang-restful-json-api/v8/restapi/models"
+    },
+    "todoList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/todo"
+      },
+      "x-go-name": "TodoList",
+      "x-go-package": "golang-restful-json-api/v8/restapi/models"
+    }
+  },
+  "responses": {
+    "badReq": {
+      "description": "Error Bad Request",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "description": "HTTP status code 400 - Status Bad Request",
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "Code"
+          },
+          "message": {
+            "description": "Detailed error message",
+            "type": "string",
+            "x-go-name": "Message"
+          }
+        }
+      }
+    },
+    "conflict": {
+      "description": "Error Conflict",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "description": "HTTP status code 409 - Conflict",
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "Code"
+          },
+          "message": {
+            "description": "Detailed error message",
+            "type": "string",
+            "x-go-name": "Message"
+          }
+        }
+      }
+    },
+    "forbidden": {
+      "description": "Error Forbidden",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "description": "HTTP status code 403 - Forbidden",
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "Code"
+          },
+          "message": {
+            "description": "Detailed error message",
+            "type": "string",
+            "x-go-name": "Message"
+          }
+        }
+      }
+    },
+    "internal": {
+      "description": "Error Interval Server",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "description": "HTTP status code 500 - Internal server error",
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "Code"
+          },
+          "message": {
+            "description": "Detailed error message",
+            "type": "string",
+            "x-go-name": "Message"
+          }
+        }
+      }
+    },
+    "notFound": {
+      "description": "Error Not Found",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "description": "HTTP status code 404 - Not Found",
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "Code"
+          },
+          "message": {
+            "description": "Detailed error message",
+            "type": "string",
+            "x-go-name": "Message"
+          }
+        }
+      }
+    },
+    "ok": {
+      "description": "Success response",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "description": "HTTP Status Code 200",
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "Code"
+          }
+        }
+      }
+    },
+    "todoResp": {
+      "description": "HTTP status code 200 and todo model in data",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "description": "HTTP status code 200",
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "Code"
+          },
+          "data": {
+            "$ref": "#/definitions/todo"
+          }
+        }
+      }
+    },
+    "todosResp": {
+      "description": "HTTP status code 200 and an array of todo models in data",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "description": "HTTP status code 200 - Status OK",
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "Code"
+          },
+          "data": {
+            "$ref": "#/definitions/todoList"
+          }
+        }
+      }
+    },
+    "validationError": {
+      "description": "A ValidationError is an error that is used when the required input fails validation.",
+      "schema": {
+        "type": "object",
+        "required": [
+          "Message"
+        ],
+        "properties": {
+          "FieldName": {
+            "description": "An optional field name to which this validation applies",
+            "type": "string"
+          },
+          "Message": {
+            "description": "The validation message",
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
